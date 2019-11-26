@@ -44,7 +44,13 @@ class FoodSpider(scrapy.Spider):
 	#scraping data for variables of interest
 
 	#crawl to detail pages
-        url=response.css('div [id="pagingright"]  a').attrib['href']
+        try:
+            url=response.css('div [id="pagingright"]  a').attrib['href']
+            url2="https://www.foodholland.nl"+url
+            print(url2)
+            yield scrapy.Request(url=url2, callback=self.parseListOfFoodJobs)
+        except:
+            pass
 
 	#crawling to next list of food jobs
 #        try:
