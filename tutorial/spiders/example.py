@@ -41,9 +41,23 @@ class FoodSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parseListOfFoodJobs)
 
     def parseListOfFoodJobs(self, response):
-	#scraping data for variables of interest
+        #scraping data for each list item on index page
+        for li in response.css('#vacatures li '):
+            #scraping data for variables of interest on index page of a list item
+            yield{
+#                response.css('div [id="vacatures"] li a ').attrib['href']
+#                response.css('div.datumlijst div.lijst li a').extract()
+#                response.css('#vacatures li ').xpath('normalize-space()').extract()
+                'url': li.css('a').attrib['href'],
+                'text': li.xpath('normalize-space()').extract(),
+            }
+            #crawling to detail page of a list item
+#            url=response.css('div [id="vacatures"] li a ').attrib['href']
+            url=li.css('a').attrib['href']
+            url2="https://www.foodholland.nl"+url
+            yield scrapy.Request(url=url2, callback=self.parseDetailPage)
 
-	#crawl to detail pages
+    	#crawl to next index page
         try:
             url=response.css('div [id="pagingright"]  a').attrib['href']
             url2="https://www.foodholland.nl"+url
@@ -51,6 +65,11 @@ class FoodSpider(scrapy.Spider):
             yield scrapy.Request(url=url2, callback=self.parseListOfFoodJobs)
         except:
             pass
+
+    def parseDetailPage(self, response):
+        yield{
+            'url': response.url,
+        }
 
 	#crawling to next list of food jobs
 #        try:
