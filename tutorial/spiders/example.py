@@ -73,6 +73,7 @@ class FoodSpider(scrapy.Spider):
             'functietitel': response.css('div.specs h1:nth-of-type(2)').xpath('normalize-space()').extract(),
             'locatie': response.css('div.specs h4').xpath('normalize-space()').extract(),
             'text': response.css('#vacatures ::text').extract(),
+            'text2': response.xpath('normalize-space(//*[@id="vacatures"])').extract(),
         }
 
 	#crawling to next list of food jobs
